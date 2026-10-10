@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+simpleitk
+scikit-image
+trimesh
+scipy
+pillow
+python-multipart
+fast-simplification

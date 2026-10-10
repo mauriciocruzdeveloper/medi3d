@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Medi3D · De la resonancia al modelo 3D</title>
+<meta name="description" content="Carga series DICOM de resonancia, segmenta lesiones con un clic y genera modelos 3D exportables.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+</head>
+<body class="mode-viewer">
+<header>
+  <h1><span class="logo">◈</span> Medi3D</h1>
+  <form id="scan-form">
+    <input id="path" value="~/Descargas/resonancia" aria-label="Carpeta DICOM">
+    <button id="scan-btn" type="submit">Escanear carpeta</button>
+  </form>
+  <label class="switch" title="Habilita segmentación y modelo 3D (requiere más recursos)">
+    <input id="toggle3d" type="checkbox">
+    <span class="slider-sw"></span>
+    <span>Modelado 3D</span>
+  </label>
+</header>
+<p id="cap-warning" class="hint" hidden></p>
+<main>
+  <aside id="series-panel">
+    <h2>Series</h2>
+    <ul id="series-list"><li class="hint">Escaneá una carpeta para empezar.</li></ul>
+  </aside>
+  <section id="viewer-panel">
+    <div class="toolbar">
+      <span id="series-title">Sin serie</span>
+      <label>Corte <input id="slider" type="range" min="0" max="0" value="0"></label>
+      <span id="slice-label">0/0</span>
+    </div>
+    <div id="slice-wrap"><img id="slice" alt="Corte de resonancia"><div id="marker" hidden></div></div>
+    <div class="seg-controls">
+      <p class="hint">Hacé clic sobre la lesión u órgano que querés modelar.</p>
+      <label>Sensibilidad <input id="mult" type="range" min="1" max="5" step="0.1" value="2.5"><output id="mult-out">2.5</output></label>
+      <label>Radio máx. (mm) <input id="radius" type="number" value="60" min="5" max="300"></label>
+    </div>
+    <div id="status" role="status"></div>
+  </section>
+  <section id="three-panel">
+    <h2>Modelo 3D</h2>
+    <div id="three"></div>
+    <div class="export">
+      <a id="dl-stl" class="btn disabled">STL</a>
+      <a id="dl-obj" class="btn disabled">OBJ</a>
+      <a id="dl-glb" class="btn disabled">GLB</a>
+    </div>
+    <p id="result" class="hint"></p>
+  </section>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>

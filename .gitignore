@@ -1,0 +1,24 @@
+# Entornos virtuales
+.venv/
+venv/
+ENV/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+# SO
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
