@@ -46,3 +46,16 @@ aside,section{background:var(--panel);border:1px solid var(--line);border-radius
 body.mode-viewer #three-panel,body.mode-viewer .seg-controls{display:none}
 body.mode-viewer main{grid-template-columns:300px 1fr}
 body.mode-viewer #slice{cursor:default}
+button.secondary{background:var(--panel);border:1px solid var(--line)}
+button:disabled{opacity:.4;cursor:default;transform:none;box-shadow:none}
+#browse-dlg{background:#121828;color:var(--tx);border:1px solid var(--line);border-radius:16px;padding:20px;width:min(640px,92vw);box-shadow:0 20px 60px rgba(0,0,0,.6)}
+#browse-dlg::backdrop{background:rgba(5,8,15,.7);backdrop-filter:blur(4px)}
+#browse-dlg h2{margin:0 0 12px;font-size:1.1rem}
+.browse-bar{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.browse-bar button{padding:6px 12px}
+.browse-bar select{background:var(--panel);color:var(--tx);border:1px solid var(--line);border-radius:8px;padding:6px}
+#browse-path{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ac2);font-size:.85rem}
+#browse-list{list-style:none;margin:0;padding:4px;height:50vh;overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+#browse-list li{padding:8px 10px;border-radius:8px;cursor:pointer;transition:background .15s}
+#browse-list li:hover{background:rgba(124,92,255,.2)}
+.browse-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}

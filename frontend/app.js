@@ -30,6 +30,40 @@ $('scan-form').addEventListener('submit', async (e) => {
   } catch (err) { status(err.message, true); }
 });
 
+// ---------------- navegador de carpetas
+let browseState = null;
+async function browseTo(path) {
+  try {
+    const d = await api('/api/browse?path=' + encodeURIComponent(path));
+    browseState = d;
+    $('browse-path').textContent = d.path;
+    $('browse-up').disabled = !d.parent;
+    const sel = $('browse-roots');
+    if (d.roots.length) {
+      sel.hidden = false;
+      sel.innerHTML = d.roots.map((r) => `<option ${d.path.startsWith(r) ? 'selected' : ''}>${r}</option>`).join('');
+    }
+    const ul = $('browse-list'); ul.innerHTML = '';
+    if (!d.dirs.length) ul.innerHTML = '<li class="hint">(sin subcarpetas)</li>';
+    d.dirs.forEach((name) => {
+      const li = document.createElement('li');
+      li.textContent = '📁 ' + name;
+      li.onclick = () => browseTo(d.path.replace(/[\\/]$/, '') + (d.path.includes('\\') ? '\\' : '/') + name);
+      ul.appendChild(li);
+    });
+  } catch (err) { $('browse-path').textContent = err.message; }
+}
+$('browse-btn').onclick = () => { $('browse-dlg').showModal(); browseTo($('path').value || '~'); };
+$('browse-up').onclick = () => browseState?.parent && browseTo(browseState.parent);
+$('browse-home').onclick = () => browseTo('~');
+$('browse-roots').onchange = (e) => browseTo(e.target.value);
+$('browse-cancel').onclick = () => $('browse-dlg').close();
+$('browse-ok').onclick = () => {
+  if (!browseState) return;
+  $('path').value = browseState.path; $('browse-dlg').close();
+  $('scan-form').requestSubmit();
+};
+
 async function openSeries(s) {
   state.uid = s.uid; state.mask = null;
   state.info = await api(`/api/series/${s.uid}/info`);

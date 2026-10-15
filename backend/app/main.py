@@ -14,8 +14,17 @@ from PIL import Image
 from pydantic import BaseModel
 # Las librerías de modelado (scipy, scikit-image, trimesh) se importan solo al
 # usar el modelado 3D, para que el visor DICOM funcione sin ellas.
+import webbrowser
+import threading
+from contextlib import asynccontextmanager
 
-app = FastAPI(title="Medi3D")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Abrir el navegador 1.5 segundos después de que inicie el servidor
+    threading.Timer(1.5, lambda: webbrowser.open("http://localhost:8000")).start()
+    yield
+
+app = FastAPI(title="Medi3D", lifespan=lifespan)
 
 SERIES: dict[str, dict] = {}   # uid -> metadata + files
 VOLUMES: dict[str, sitk.Image] = {}
@@ -40,6 +49,31 @@ def classify(desc: str) -> dict:
     contrast = "post" if "con cte" in d or "gd" in d or "+c" in d else "pre" if "pre" in d else ""
     fat = "fatsat" if "fs" in d else ""
     return {"plano": plane, "secuencia": seq, "contraste": contrast, "fatsat": fat}
+
+
+@app.get("/api/browse")
+def browse(path: str = "~"):
+    """Lista subcarpetas para el selector de carpetas del frontend."""
+    p = Path(os.path.expanduser(path or "~")).resolve()
+    if not p.is_dir():
+        p = Path.home()
+    dirs = []
+    try:
+        for c in sorted(p.iterdir(), key=lambda c: c.name.lower()):
+            if c.name.startswith("."):
+                continue
+            try:
+                if c.is_dir():
+                    dirs.append(c.name)
+            except OSError:
+                pass
+    except PermissionError:
+        raise HTTPException(403, f"Sin permiso para leer: {p}")
+    roots = []
+    if os.name == "nt":
+        roots = [f"{d}:\\" for d in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" if os.path.exists(f"{d}:\\")]
+    return {"path": str(p), "parent": str(p.parent) if p.parent != p else None,
+            "home": str(Path.home()), "dirs": dirs, "roots": roots}
 
 
 class ScanReq(BaseModel):
@@ -198,6 +232,14 @@ if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
 else:
     # Ejecutándose desde el código fuente
     frontend_path = Path(__file__).parents[2] / "frontend"
+
+@app.middleware("http")
+async def no_cache(request, call_next):
+    resp = await call_next(request)
+    if not request.url.path.startswith("/api/"):
+        resp.headers["Cache-Control"] = "no-store"
+    return resp
+
 
 app.mount("/", StaticFiles(directory=frontend_path, html=True), name="web")
 

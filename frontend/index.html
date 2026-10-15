@@ -15,8 +15,23 @@
   <h1><span class="logo">◈</span> Medi3D</h1>
   <form id="scan-form">
     <input id="path" value="~/Descargas/resonancia" aria-label="Carpeta DICOM">
+    <button id="browse-btn" type="button" class="secondary">📁 Elegir…</button>
     <button id="scan-btn" type="submit">Escanear carpeta</button>
   </form>
+  <dialog id="browse-dlg">
+    <h2>Elegí la carpeta del estudio</h2>
+    <div class="browse-bar">
+      <button id="browse-up" type="button" title="Subir un nivel">⬆</button>
+      <button id="browse-home" type="button" title="Carpeta personal">🏠</button>
+      <select id="browse-roots" hidden aria-label="Unidad"></select>
+      <code id="browse-path"></code>
+    </div>
+    <ul id="browse-list"></ul>
+    <div class="browse-actions">
+      <button id="browse-cancel" type="button" class="secondary">Cancelar</button>
+      <button id="browse-ok" type="button">Usar esta carpeta y escanear</button>
+    </div>
+  </dialog>
   <label class="switch" title="Habilita segmentación y modelo 3D (requiere más recursos)">
     <input id="toggle3d" type="checkbox">
     <span class="slider-sw"></span>

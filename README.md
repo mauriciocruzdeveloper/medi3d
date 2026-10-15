@@ -12,16 +12,27 @@ Visor interactivo de imágenes DICOM de resonancia magnética con capacidad de s
 
 Si tienes Python instalado:
 
-1. Clona el repositorio.
-2. Instala las dependencias:
+1. Clona el repositorio y entra a la carpeta.
+2. Crea y activa un entorno virtual (recomendado):
+   ```bash
+   # En Windows:
+   python -m venv .venv
+   .venv\Scripts\activate
+
+   # En Linux/Mac:
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
+3. Instala las dependencias:
    ```bash
    pip install -r requirements.txt
    ```
-3. Ejecuta el servidor:
+4. Ejecuta el servidor:
    ```bash
    uvicorn backend.app.main:app --port 8000
    ```
-4. Abre `http://localhost:8000` en tu navegador.
+5. Abre `http://localhost:8000` en tu navegador.
+
 
 ## Distribución (Para usuarios sin conocimientos técnicos)
 
@@ -29,11 +40,14 @@ Para que cualquier persona pueda ejecutar el programa sin instalar Python ni dep
 
 ### Cómo compilar el ejecutable
 
-1. Instala PyInstaller:
+> **Importante:** Para que el archivo final no sea excesivamente pesado, es vital compilarlo **estando dentro del entorno virtual activo**. De esta forma, PyInstaller solo incluirá las librerías estrictamente necesarias para el proyecto, y no todas las que tengas instaladas en tu computadora.
+
+1. Con el entorno virtual activado, instala PyInstaller:
    ```bash
    pip install pyinstaller
    ```
 2. Ejecuta el siguiente comando para generar un único archivo ejecutable. Este comando le indica a PyInstaller que incluya la carpeta `frontend` dentro del empaquetado:
+
 
    **En Linux/Mac:**
    ```bash
